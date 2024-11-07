@@ -1,20 +1,38 @@
+{% extends "base/main.html" %}
+{% block content %}
 
-{% if request.user.is_authenticated%}
-    <p>{{request.user}}</p>
+
+<div class="header-bar">
+    <div>
+        <h1>Hello {{request.user|title }}</h1>
+        <h3 style="margin:0">You have <i>{{count}}</i> incomplete task{{count|pluralize:"s"}}</h3>
+    </div>
+
+    {% if request.user.is_authenticated%}
     <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
         <button type="submit">logout</button>
     </form>
     {% comment %} <a href="{% url "logout" %}">Logout</a> {% endcomment %}
+    {% else %}
+    <a href="{% url "login" %}">Login</a>
+    {% endif %}
 
 
-{% else %}
-<a href="{% url "login" %}">Login</a>
-{% endif %}
+</div>
 
 
+
+<hr>
 <h1>This is my to do list</h1>
 <a href="{%url 'task-create' %}">Add Task</a>
+
+
+<form action="" method="get">
+    <input type="text" name="search-area" value="{{search_input}}">
+    <input type="submit" value="Search">
+</form>
+
 
 <table>
     <tr>
@@ -24,7 +42,7 @@
     {% for task in tasks%}
     <tr>
         <td>{{task.title}}</td>
-        <td><a href="{% url 'task' task.id %}">Views</a></td>
+        
         <td><a href="{% url 'task-update' task.id %}">Edit</a></td>
         <td><a href="{% url 'task-delete' task.id %}">Delete</a></td>
         
@@ -34,3 +52,6 @@
             <h3>No iteams in list</h3>
     {% endfor %}
 </table>
+
+
+{% endblock content %}
